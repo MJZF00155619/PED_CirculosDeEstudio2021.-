@@ -95,6 +95,43 @@ void printPostOrder(struct Node* node){
     cout<<node->data<<" ";
 }
 
+struct Node* deleteNode(struct Node* root, int data){
+    //caso base
+    if(root==NULL){
+        return root;
+    }
+
+    if(data<root->data){
+        root->left = deleteNode(root->left, data);
+    }
+    else if(data>root->data){
+        root->right = deleteNode(root->right, data);
+    }
+    else{
+        //Nodo no tenia hijos
+        if(root->left==NULL and root->right==NULL){
+            return NULL;
+        }
+        //nodo con un solo hijo
+        else if(root->left == NULL){
+            struct Node* temp = root->right;
+            free(root);
+            return temp;
+        }
+        else if(root->right == NULL){
+            struct Node* temp = root->left;
+            free(root);
+            return temp;
+        }
+
+        struct Node* temp = minValueNode(root->right);
+        root->data = temp->data;
+        root->right = deleteNode(root->right, temp->data);
+
+    }
+    return root;
+}
+
 int main(){
 
     struct Node* root = NULL;
@@ -105,9 +142,11 @@ int main(){
 
     printInOrder(root);
     cout<<endl;
-    printPreOrder(root);
+    
+    deleteNode(root, 30);
+
+    printInOrder(root);
     cout<<endl;
-    printPostOrder(root);
 
     return 0;
 }
